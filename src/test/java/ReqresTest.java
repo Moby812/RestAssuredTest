@@ -1,6 +1,9 @@
+import api.Register;
 import api.Specifications;
+import api.SuccessReg;
 import api.UserData;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -12,6 +15,7 @@ public class ReqresTest {
     private final static String url = "https://reqres.in/";
 
     @Test
+    @DisplayName("Аватар содержит ID пользователя, почты всех пользователей заканчиваются на '@reqres.in'")
     public void checkAvatarIdTest() {
         Specifications.installSpec(Specifications.requestSpec(url), Specifications.respSpecOk200());
         List<UserData> users = given()
@@ -31,8 +35,22 @@ public class ReqresTest {
     }
 
     @Test
+    @DisplayName("Успешная регистрация пользователя")
     public void successRegTest() {
         Specifications.installSpec(Specifications.requestSpec(url), Specifications.respSpecOk200());
-        
+        Integer id = 4;
+        String token = "QpwL5tke4Pnpja7X4";
+
+        Register user = new Register("eve.holt@reqres.in","pistol");
+        SuccessReg successReg = given()
+                .body(user)
+                .when()
+                .post("api/register")
+                .then().log().all()
+                .extract().as(SuccessReg.class);
+        Assertions.assertNotNull(successReg.getId());
+        Assertions.assertNotNull(successReg.getToken());
+        Assertions.assertEquals(id, successReg.getId());
+        Assertions.assertEquals(token, successReg.getToken());
     }
 }
