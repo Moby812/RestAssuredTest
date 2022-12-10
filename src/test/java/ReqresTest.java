@@ -1,7 +1,8 @@
-import api.Register;
-import api.Specifications;
-import api.SuccessReg;
-import api.UserData;
+import api.*;
+import api.request.Register;
+import api.request.UserData;
+import api.response.FailReg;
+import api.response.SuccessReg;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,5 +53,19 @@ public class ReqresTest {
         Assertions.assertNotNull(successReg.getToken());
         Assertions.assertEquals(id, successReg.getId());
         Assertions.assertEquals(token, successReg.getToken());
+    }
+
+    @Test
+    @DisplayName("Неуспешная регистрация пользователя")
+    public void failRegTest() {
+        Specifications.installSpec(Specifications.requestSpec(url), Specifications.respSpecError400());
+        Register user = new Register("sydney@fife","");
+        FailReg failReg = given()
+                .body(user)
+                .when()
+                .post("api/register")
+                .then().log().all()
+                .extract().as(FailReg.class);
+        Assertions.assertEquals("Missing password",failReg.getError());
     }
 }

@@ -1,4 +1,4 @@
-package api;
+package api.request;
 //https://json2csharp.com/code-converters/json-to-pojo
 
 public class UserData {
