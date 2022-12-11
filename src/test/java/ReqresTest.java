@@ -2,6 +2,7 @@ import api.*;
 import api.request.Register;
 import api.request.UserData;
 import api.response.FailReg;
+import api.response.ResourceData;
 import api.response.SuccessReg;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -67,5 +68,19 @@ public class ReqresTest {
                 .then().log().all()
                 .extract().as(FailReg.class);
         Assertions.assertEquals("Missing password",failReg.getError());
+    }
+
+    @Test
+    @DisplayName("Года отсортированы в порядке возрастания")
+    public void sortedYearsTest(){
+        Specifications.installSpec(Specifications.requestSpec(url), Specifications.respSpecOk200());
+        List<ResourceData> resource = given()
+                .when()
+                .get("api/unknown")
+                .then().log().all()
+                .extract().body().jsonPath().getList("data", ResourceData.class);
+        List<Integer> years = resource.stream().map(ResourceData::getYear).collect(Collectors.toList());
+        List<Integer> sortedYears = years.stream().sorted().collect(Collectors.toList());
+        Assertions.assertEquals(sortedYears,years);
     }
 }
