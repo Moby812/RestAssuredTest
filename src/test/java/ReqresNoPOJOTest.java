@@ -25,12 +25,12 @@ public class ReqresNoPOJOTest {
                 .when()
                 .get("api/users?page=2")
                 .then().log().all()
-                .body("page",equalTo(2))
-                .body("data.id",notNullValue())
-                .body("data.email",notNullValue())
-                .body("data.first_name",notNullValue())
-                .body("data.last_name",notNullValue())
-                .body("data.avatar",notNullValue())
+                .body("page", equalTo(2))
+                .body("data.id", notNullValue())
+                .body("data.email", notNullValue())
+                .body("data.first_name", notNullValue())
+                .body("data.last_name", notNullValue())
+                .body("data.avatar", notNullValue())
                 .extract().response();
         JsonPath jsonPath = response.jsonPath();
         List<Integer> ids = jsonPath.get("data.id");
@@ -40,23 +40,42 @@ public class ReqresNoPOJOTest {
         for (int i = 0; i < avatars.size(); i++) {
             Assertions.assertTrue(avatars.get(i).contains(ids.get(i).toString()));
         }
-        Assertions.assertTrue(emails.stream().allMatch(x->x.endsWith("@reqres.in")));
+        Assertions.assertTrue(emails.stream().allMatch(x -> x.endsWith("@reqres.in")));
     }
 
     @Test
     @DisplayName("Успешная регистрация пользователя")
     public void successRegNoPOJOTest() {
         Specifications.installSpec(Specifications.requestSpec(url), Specifications.respSpecOk200());
-        Map<String,String> user = new HashMap<>();
-        user.put("email","eve.holt@reqres.in");
-        user.put("password","pistol");
+        Map<String, String> user = new HashMap<>();
+        user.put("email", "eve.holt@reqres.in");
+        user.put("password", "pistol");
+        Response response = given()
+                .body(user)
+                .when()
+                .post("api/register")
+                .then().log().all()
+                .extract().response();
+        JsonPath jsonPath = response.jsonPath();
+        Integer id = jsonPath.get("id");
+        String token = jsonPath.get("token");
+
+        Assertions.assertEquals(4,id);
+        Assertions.assertEquals("QpwL5tke4Pnpja7X4",token);
+    }
+
+    @Test
+    @DisplayName("Неуспешная регистрация пользователя")
+    public void failRegNoPOJOTest() {
+        Specifications.installSpec(Specifications.requestSpec(url), Specifications.respSpecError400());
+        Map<String, String> user = new HashMap<>();
+        user.put("email", "sydney@fife");
+        //вариант без использования Response
         given()
                 .body(user)
                 .when()
                 .post("api/register")
                 .then().log().all()
-                .body("id",equalTo(4))
-                .body("token",equalTo("QpwL5tke4Pnpja7X4"));
+                .body("error",equalTo("Missing password"));
     }
-
 }
