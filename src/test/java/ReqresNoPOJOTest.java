@@ -5,7 +5,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -39,6 +41,22 @@ public class ReqresNoPOJOTest {
             Assertions.assertTrue(avatars.get(i).contains(ids.get(i).toString()));
         }
         Assertions.assertTrue(emails.stream().allMatch(x->x.endsWith("@reqres.in")));
-
     }
+
+    @Test
+    @DisplayName("Успешная регистрация пользователя")
+    public void successRegNoPOJOTest() {
+        Specifications.installSpec(Specifications.requestSpec(url), Specifications.respSpecOk200());
+        Map<String,String> user = new HashMap<>();
+        user.put("email","eve.holt@reqres.in");
+        user.put("password","pistol");
+        given()
+                .body(user)
+                .when()
+                .post("api/register")
+                .then().log().all()
+                .body("id",equalTo(4))
+                .body("token",equalTo("QpwL5tke4Pnpja7X4"));
+    }
+
 }
