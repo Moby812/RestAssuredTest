@@ -1,13 +1,16 @@
 import api.*;
 import api.request.Register;
 import api.request.UserData;
+import api.request.UserTime;
 import api.response.FailReg;
 import api.response.ResourceData;
 import api.response.SuccessReg;
+import api.response.UserTimeRes;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.Clock;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -92,5 +95,23 @@ public class ReqresTest {
                 .when()
                 .delete("api/users/2")
                 .then().log().all();
+    }
+
+    @Test
+    @DisplayName("Сверка времени запроса")
+    public void timeTest(){
+        Specifications.installSpec(Specifications.requestSpec(url), Specifications.respSpecOk200());
+        UserTime user = new UserTime("morpheus","zion resident");
+        UserTimeRes userTimeRes = given()
+                .body(user)
+                .when()
+                .put("api/users/2")
+                .then().log().all()
+                .extract().as(UserTimeRes.class);
+        String regex = "\\..*$";
+        String currentTime = Clock.systemUTC().instant().toString().replaceAll(regex, "");
+
+        Assertions.assertEquals(currentTime,userTimeRes.getUpdatedAt().replaceAll(regex, ""));
+
     }
 }
