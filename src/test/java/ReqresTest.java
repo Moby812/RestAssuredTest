@@ -83,4 +83,14 @@ public class ReqresTest {
         List<Integer> sortedYears = years.stream().sorted().collect(Collectors.toList());
         Assertions.assertEquals(sortedYears,years);
     }
+
+    @Test
+    @DisplayName("Удаление пользователя")
+    public void deleteUserTest(){
+        Specifications.installSpec(Specifications.requestSpec(url), Specifications.respSpecCode(204));
+        given()
+                .when()
+                .delete("api/users/2")
+                .then().log().all();
+    }
 }
