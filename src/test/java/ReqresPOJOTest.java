@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
 
-public class ReqresTest {
+public class ReqresPOJOTest {
     private final static String url = "https://reqres.in/";
 
     @Test
