@@ -3,6 +3,7 @@ import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -17,6 +18,8 @@ public class ReqresNoPOJOTest {
     private final static String url = "https://reqres.in/";
 
     @Test
+    @Tag("NoPOJO")
+    @Tag("get")
     @DisplayName("Аватар содержит ID пользователя, почты всех пользователей заканчиваются на '@reqres.in'")
     public void checkAvatarIdNoPOJOTest() {
 
@@ -44,6 +47,8 @@ public class ReqresNoPOJOTest {
     }
 
     @Test
+    @Tag("NoPOJO")
+    @Tag("post")
     @DisplayName("Успешная регистрация пользователя")
     public void successRegNoPOJOTest() {
         Specifications.installSpec(Specifications.requestSpec(url), Specifications.respSpecOk200());
@@ -65,6 +70,8 @@ public class ReqresNoPOJOTest {
     }
 
     @Test
+    @Tag("NoPOJO")
+    @Tag("post")
     @DisplayName("Неуспешная регистрация пользователя")
     public void failRegNoPOJOTest() {
         Specifications.installSpec(Specifications.requestSpec(url), Specifications.respSpecError400());

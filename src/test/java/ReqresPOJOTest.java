@@ -8,6 +8,7 @@ import api.response.SuccessReg;
 import api.response.UserTimeRes;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.time.Clock;
@@ -20,6 +21,8 @@ public class ReqresPOJOTest {
     private final static String url = "https://reqres.in/";
 
     @Test
+    @Tag("POJO")
+    @Tag("get")
     @DisplayName("Аватар содержит ID пользователя, почты всех пользователей заканчиваются на '@reqres.in'")
     public void checkAvatarIdTest() {
         Specifications.installSpec(Specifications.requestSpec(url), Specifications.respSpecOk200());
@@ -40,6 +43,8 @@ public class ReqresPOJOTest {
     }
 
     @Test
+    @Tag("POJO")
+    @Tag("post")
     @DisplayName("Успешная регистрация пользователя")
     public void successRegTest() {
         Specifications.installSpec(Specifications.requestSpec(url), Specifications.respSpecOk200());
@@ -60,6 +65,8 @@ public class ReqresPOJOTest {
     }
 
     @Test
+    @Tag("POJO")
+    @Tag("post")
     @DisplayName("Неуспешная регистрация пользователя")
     public void failRegTest() {
         Specifications.installSpec(Specifications.requestSpec(url), Specifications.respSpecError400());
@@ -74,6 +81,8 @@ public class ReqresPOJOTest {
     }
 
     @Test
+    @Tag("POJO")
+    @Tag("get")
     @DisplayName("Года отсортированы в порядке возрастания")
     public void sortedYearsTest(){
         Specifications.installSpec(Specifications.requestSpec(url), Specifications.respSpecOk200());
@@ -88,6 +97,8 @@ public class ReqresPOJOTest {
     }
 
     @Test
+    @Tag("POJO")
+    @Tag("del")
     @DisplayName("Удаление пользователя")
     public void deleteUserTest(){
         Specifications.installSpec(Specifications.requestSpec(url), Specifications.respSpecCode(204));
@@ -98,6 +109,8 @@ public class ReqresPOJOTest {
     }
 
     @Test
+    @Tag("POJO")
+    @Tag("put")
     @DisplayName("Сверка времени запроса")
     public void timeTest(){
         Specifications.installSpec(Specifications.requestSpec(url), Specifications.respSpecOk200());
