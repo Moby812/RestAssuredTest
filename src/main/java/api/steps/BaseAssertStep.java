@@ -1,13 +1,9 @@
-package api;
+package api.steps;
 
-import api.request.UserData;
 import io.qameta.allure.Step;
-import io.restassured.specification.ResponseSpecification;
 import org.junit.jupiter.api.Assertions;
-
 import java.util.List;
 
-import static io.restassured.RestAssured.given;
 
 abstract public class BaseAssertStep {
 

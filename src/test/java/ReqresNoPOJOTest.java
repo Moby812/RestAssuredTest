@@ -1,5 +1,7 @@
-import api.BaseAssertStep;
+import api.steps.BaseAssertStep;
 import api.Specifications;
+import api.steps.NoPojoSteps;
+import io.qameta.allure.Allure;
 import io.qameta.allure.Owner;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
@@ -12,11 +14,10 @@ import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 
 @Owner("Парамонов Павел")
-public class ReqresNoPOJOTest extends BaseAssertStep {
+public class ReqresNoPOJOTest extends NoPojoSteps {
     private final static String url = "https://reqres.in/";
 
     @Test
@@ -37,6 +38,7 @@ public class ReqresNoPOJOTest extends BaseAssertStep {
                 .body("data.last_name", notNullValue())
                 .body("data.avatar", notNullValue())
                 .extract().response();
+        Allure.step("Выполнен get запрос по адресу: api/users?page=2");
         JsonPath jsonPath = response.jsonPath();
         List<Integer> ids = jsonPath.get("data.id");
         List<String> emails = jsonPath.get("data.email");
@@ -59,12 +61,7 @@ public class ReqresNoPOJOTest extends BaseAssertStep {
         Map<String, String> user = new HashMap<>();
         user.put("email", "eve.holt@reqres.in");
         user.put("password", "pistol");
-        Response response = given()
-                .body(user)
-                .when()
-                .post("api/register")
-                .then().log().all()
-                .extract().response();
+        Response response = postResponse(user, "api/register");
         JsonPath jsonPath = response.jsonPath();
         Integer id = jsonPath.get("id");
         String token = jsonPath.get("token");
@@ -88,5 +85,9 @@ public class ReqresNoPOJOTest extends BaseAssertStep {
                 .post("api/register")
                 .then().log().all()
                 .body("error",equalTo("Missing password"));
+        Allure.step("Выполнен post запрос по адресу: api/register");
+
+        //вариант с Response в одну строку
+        assertEquals(postResponse(user, "api/register").jsonPath().get("error"),"Missing password");
     }
 }

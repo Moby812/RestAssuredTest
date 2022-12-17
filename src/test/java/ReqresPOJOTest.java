@@ -6,6 +6,7 @@ import api.response.FailReg;
 import api.response.ResourceData;
 import api.response.SuccessReg;
 import api.response.UserTimeRes;
+import api.steps.PojoSteps;
 import io.qameta.allure.Owner;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -15,10 +16,8 @@ import java.time.Clock;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static io.restassured.RestAssured.given;
-
 @Owner("Парамонов Павел")
-public class ReqresPOJOTest extends BaseAssertStep{
+public class ReqresPOJOTest extends PojoSteps {
     private final static String url = "https://reqres.in/";
 
     @Test
@@ -27,11 +26,7 @@ public class ReqresPOJOTest extends BaseAssertStep{
     @DisplayName("Аватар содержит ID пользователя, почты всех пользователей заканчиваются на '@reqres.in'")
     public void checkAvatarIdTest() {
         Specifications.installSpec(Specifications.requestSpec(url), Specifications.respSpecOk200());
-        List<UserData> users = given()
-                .when()
-                .get("api/users?page=2")
-                .then().log().all()
-                .extract().body().jsonPath().getList("data", UserData.class);
+        List<UserData> users = getUserData("api/users?page=2","data");
 
         users.forEach(x -> assertTrue(x.getAvatar().contains(x.getId().toString()),
                 "Аватар "+x.getAvatar()+" содержит Id клиента")); //проверка каждой записи
@@ -56,12 +51,8 @@ public class ReqresPOJOTest extends BaseAssertStep{
         String token = "QpwL5tke4Pnpja7X4";
 
         Register user = new Register("eve.holt@reqres.in","pistol");
-        SuccessReg successReg = given()
-                .body(user)
-                .when()
-                .post("api/register")
-                .then().log().all()
-                .extract().as(SuccessReg.class);
+        SuccessReg successReg = postSuccessReg(user,"api/register");
+
         assertNotNull(successReg.getId(),"getId");
         assertNotNull(successReg.getToken(), "getId");
         assertEquals(id, successReg.getId());
@@ -75,12 +66,8 @@ public class ReqresPOJOTest extends BaseAssertStep{
     public void failRegTest() {
         Specifications.installSpec(Specifications.requestSpec(url), Specifications.respSpecError400());
         Register user = new Register("sydney@fife","");
-        FailReg failReg = given()
-                .body(user)
-                .when()
-                .post("api/register")
-                .then().log().all()
-                .extract().as(FailReg.class);
+        FailReg failReg = postFailReg(user,"api/register");
+
         assertEquals("Missing password",failReg.getError());
     }
 
@@ -90,11 +77,8 @@ public class ReqresPOJOTest extends BaseAssertStep{
     @DisplayName("Года отсортированы в порядке возрастания")
     public void sortedYearsTest(){
         Specifications.installSpec(Specifications.requestSpec(url), Specifications.respSpecOk200());
-        List<ResourceData> resource = given()
-                .when()
-                .get("api/unknown")
-                .then().log().all()
-                .extract().body().jsonPath().getList("data", ResourceData.class);
+        List<ResourceData> resource = getResourceData("api/unknown","data");
+
         List<Integer> years = resource.stream().map(ResourceData::getYear).collect(Collectors.toList());
         List<Integer> sortedYears = years.stream().sorted().collect(Collectors.toList());
         assertEquals(sortedYears,years);
@@ -106,10 +90,7 @@ public class ReqresPOJOTest extends BaseAssertStep{
     @DisplayName("Удаление пользователя")
     public void deleteUserTest(){
         Specifications.installSpec(Specifications.requestSpec(url), Specifications.respSpecCode(204));
-        given()
-                .when()
-                .delete("api/users/2")
-                .then().log().all();
+        deleteUserId("api/users/2");
     }
 
     @Test
@@ -119,12 +100,8 @@ public class ReqresPOJOTest extends BaseAssertStep{
     public void timeTest(){
         Specifications.installSpec(Specifications.requestSpec(url), Specifications.respSpecOk200());
         UserTime user = new UserTime("morpheus","zion resident");
-        UserTimeRes userTimeRes = given()
-                .body(user)
-                .when()
-                .put("api/users/2")
-                .then().log().all()
-                .extract().as(UserTimeRes.class);
+        UserTimeRes userTimeRes = putUserTimeRes(user,"api/users/2");
+
         String regex = "\\..*$";
         String currentTime = Clock.systemUTC().instant().toString().replaceAll(regex, "");
 
