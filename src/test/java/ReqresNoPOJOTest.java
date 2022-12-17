@@ -1,7 +1,8 @@
+import api.BaseAssertStep;
 import api.Specifications;
+import io.qameta.allure.Owner;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,8 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
-public class ReqresNoPOJOTest {
+@Owner("Парамонов Павел")
+public class ReqresNoPOJOTest extends BaseAssertStep {
     private final static String url = "https://reqres.in/";
 
     @Test
@@ -41,9 +43,11 @@ public class ReqresNoPOJOTest {
         List<String> avatars = jsonPath.get("data.avatar");
 
         for (int i = 0; i < avatars.size(); i++) {
-            Assertions.assertTrue(avatars.get(i).contains(ids.get(i).toString()));
+            assertTrue(avatars.get(i).contains(ids.get(i).toString()),
+                    "Аватар "+avatars.get(i)+" содержит Id клиента (Проверка через массив)");
         }
-        Assertions.assertTrue(emails.stream().allMatch(x -> x.endsWith("@reqres.in")));
+        assertTrue(emails.stream().allMatch(x -> x.endsWith("@reqres.in")),
+                "Почта заканчивается на @reqres.in");
     }
 
     @Test
@@ -65,8 +69,8 @@ public class ReqresNoPOJOTest {
         Integer id = jsonPath.get("id");
         String token = jsonPath.get("token");
 
-        Assertions.assertEquals(4,id);
-        Assertions.assertEquals("QpwL5tke4Pnpja7X4",token);
+        assertEquals(4,id);
+        assertEquals("QpwL5tke4Pnpja7X4",token);
     }
 
     @Test

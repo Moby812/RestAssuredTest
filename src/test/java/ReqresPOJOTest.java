@@ -6,7 +6,7 @@ import api.response.FailReg;
 import api.response.ResourceData;
 import api.response.SuccessReg;
 import api.response.UserTimeRes;
-import org.junit.jupiter.api.Assertions;
+import io.qameta.allure.Owner;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,8 @@ import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
 
-public class ReqresPOJOTest {
+@Owner("Парамонов Павел")
+public class ReqresPOJOTest extends BaseAssertStep{
     private final static String url = "https://reqres.in/";
 
     @Test
@@ -32,13 +33,16 @@ public class ReqresPOJOTest {
                 .then().log().all()
                 .extract().body().jsonPath().getList("data", UserData.class);
 
-        users.forEach(x -> Assertions.assertTrue(x.getAvatar().contains(x.getId().toString()))); //проверка каждой записи
-        Assertions.assertTrue(users.stream().allMatch(x -> x.getEmail().endsWith("@reqres.in"))); //проверка всех записей
+        users.forEach(x -> assertTrue(x.getAvatar().contains(x.getId().toString()),
+                "Аватар "+x.getAvatar()+" содержит Id клиента")); //проверка каждой записи
+        assertTrue(users.stream().allMatch(x -> x.getEmail().endsWith("@reqres.in")),
+                "Почта заканчивается на @reqres.in"); //проверка всех записей
 
         List<String> avatars = users.stream().map(UserData::getAvatar).collect(Collectors.toList());
         List<String> ids = users.stream().map(x -> x.getId().toString()).collect(Collectors.toList());
         for (int i = 0; i < avatars.size(); i++) {
-            Assertions.assertTrue(avatars.get(i).contains(ids.get(i)));
+            assertTrue(avatars.get(i).contains(ids.get(i)),
+                    "Аватар "+avatars.get(i)+" содержит Id клиента (Проверка через массив)");
         }
     }
 
@@ -58,10 +62,10 @@ public class ReqresPOJOTest {
                 .post("api/register")
                 .then().log().all()
                 .extract().as(SuccessReg.class);
-        Assertions.assertNotNull(successReg.getId());
-        Assertions.assertNotNull(successReg.getToken());
-        Assertions.assertEquals(id, successReg.getId());
-        Assertions.assertEquals(token, successReg.getToken());
+        assertNotNull(successReg.getId(),"getId");
+        assertNotNull(successReg.getToken(), "getId");
+        assertEquals(id, successReg.getId());
+        assertEquals(token, successReg.getToken());
     }
 
     @Test
@@ -77,7 +81,7 @@ public class ReqresPOJOTest {
                 .post("api/register")
                 .then().log().all()
                 .extract().as(FailReg.class);
-        Assertions.assertEquals("Missing password",failReg.getError());
+        assertEquals("Missing password",failReg.getError());
     }
 
     @Test
@@ -93,7 +97,7 @@ public class ReqresPOJOTest {
                 .extract().body().jsonPath().getList("data", ResourceData.class);
         List<Integer> years = resource.stream().map(ResourceData::getYear).collect(Collectors.toList());
         List<Integer> sortedYears = years.stream().sorted().collect(Collectors.toList());
-        Assertions.assertEquals(sortedYears,years);
+        assertEquals(sortedYears,years);
     }
 
     @Test
@@ -124,7 +128,7 @@ public class ReqresPOJOTest {
         String regex = "\\..*$";
         String currentTime = Clock.systemUTC().instant().toString().replaceAll(regex, "");
 
-        Assertions.assertEquals(currentTime,userTimeRes.getUpdatedAt().replaceAll(regex, ""));
+        assertEquals(currentTime,userTimeRes.getUpdatedAt().replaceAll(regex, ""));
 
     }
 }
