@@ -1,4 +1,3 @@
-import api.steps.BaseAssertStep;
 import api.Specifications;
 import api.steps.NoPojoSteps;
 import io.qameta.allure.Allure;

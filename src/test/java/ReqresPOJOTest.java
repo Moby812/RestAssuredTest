@@ -7,6 +7,7 @@ import api.response.ResourceData;
 import api.response.SuccessReg;
 import api.response.UserTimeRes;
 import api.steps.PojoSteps;
+import io.qameta.allure.Flaky;
 import io.qameta.allure.Owner;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -94,6 +95,7 @@ public class ReqresPOJOTest extends PojoSteps {
     }
 
     @Test
+    @Flaky
     @Tag("POJO")
     @Tag("put")
     @DisplayName("Сверка времени запроса")

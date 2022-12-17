@@ -13,10 +13,10 @@ import java.util.List;
 
 import static io.restassured.RestAssured.given;
 
-public class PojoSteps extends BaseAssertStep{
+abstract public class PojoSteps extends BaseAssertStep{
 
     @Step("Выполнение get запроса: {url} и извлечение данных из параметра {path}")
-    public List<UserData> getUserData(String url, String path) {
+    protected List<UserData> getUserData(String url, String path) {
         return given()
                 .when()
                 .get(url)
@@ -25,7 +25,7 @@ public class PojoSteps extends BaseAssertStep{
     }
 
     @Step("Выполнение post запроса: {url}")
-    public SuccessReg postSuccessReg(Register body, String url) {
+    protected SuccessReg postSuccessReg(Register body, String url) {
         return given()
                 .body(body)
                 .when()
@@ -35,7 +35,7 @@ public class PojoSteps extends BaseAssertStep{
     }
 
     @Step("Выполнение post запроса: {url}")
-    public FailReg postFailReg(Register body, String url) {
+    protected FailReg postFailReg(Register body, String url) {
         return given()
                 .body(body)
                 .when()
@@ -45,7 +45,7 @@ public class PojoSteps extends BaseAssertStep{
     }
 
     @Step("Выполнение delete запроса: {url}")
-    public void deleteUserId(String url) {
+    protected void deleteUserId(String url) {
         given()
                 .when()
                 .delete(url)
@@ -53,7 +53,7 @@ public class PojoSteps extends BaseAssertStep{
     }
 
     @Step("Выполнение get запроса: {url} и извлечение данных из параметра {path}")
-    public List<ResourceData> getResourceData(String url, String path) {
+    protected List<ResourceData> getResourceData(String url, String path) {
         return given()
                 .when()
                 .get(url)
@@ -62,7 +62,7 @@ public class PojoSteps extends BaseAssertStep{
     }
 
     @Step("Выполнение put запроса: {url}")
-    public UserTimeRes putUserTimeRes(UserTime body, String url) {
+    protected UserTimeRes putUserTimeRes(UserTime body, String url) {
         return  given()
                 .body(body)
                 .when()

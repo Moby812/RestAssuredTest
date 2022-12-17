@@ -7,10 +7,10 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
-public class NoPojoSteps extends BaseAssertStep {
+abstract public class NoPojoSteps extends BaseAssertStep {
 
     @Step("Выполнение post запроса: {url}")
-    public Response postResponse(Map<String, String> body, String url) {
+    protected Response postResponse(Map<String, String> body, String url) {
         return given()
                 .body(body)
                 .when()
