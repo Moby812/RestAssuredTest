@@ -16,6 +16,7 @@
         <junit.jupiter.version>5.9.0</junit.jupiter.version>
         <junit.platform.version>1.9.0</junit.platform.version>
         <aspectj.version>1.9.9.1</aspectj.version>
+        <maven.resources.plugin>3.3.0</maven.resources.plugin>
     </properties>
 
     <dependencies>
@@ -69,6 +70,11 @@
             <version>${aspectj.version}</version>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>${maven.resources.plugin}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -109,6 +115,32 @@
                     <reportVersion>${qameta.allure.version}</reportVersion>
                     <allureDownloadUrl>https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/${qameta.allure.version}/allure-commandline-${qameta.allure.version}.zip</allureDownloadUrl>
                 </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven.resources.plugin}</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>
+                                ${basedir}/target/allure-results
+                            </outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources</directory>
+                                    <includes>
+                                        <include>environment.properties</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
