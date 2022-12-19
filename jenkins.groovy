@@ -20,7 +20,7 @@ node {
         }
 
         try {
-            parallel getTestStages(["POJO", "NoPOGO"])
+            parallel getTestStages(["POJO"])
         } finally {
             stage ("Allure") {
                 generateAllure()
@@ -43,7 +43,9 @@ def getTestStages(testTags) {
 
 def runTestWithTag(String tag) {
     try {
-        labelledShell(label: "Run ${tag}", script: "mvn clean test -x test ${tag}")
+        labelledShell(label: '''Run tests''', script: '''
+                  mvn clean test -Dgroups=${tag}
+                   ''')
     } finally {
         echo "some failed tests"
     }
