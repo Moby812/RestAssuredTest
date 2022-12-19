@@ -1,4 +1,6 @@
 task_branch = "${TEST_BRANCH_NAME}"
+task_tags = "${TEST_TAGS_NAME}"
+
 def branch_cutted = task_branch.contains("origin") ? task_branch.split('/')[1] : task_branch.trim()
 currentBuild.displayName = "$branch_cutted"
 base_git_url = "https://github.com/Moby812/RestAssuredTest.git"
@@ -20,7 +22,7 @@ node {
         }
 
         try {
-            parallel getTestStages(["POJO"])
+            parallel getTestStages(["$task_tags"])
         } finally {
             stage ("Allure") {
                 generateAllure()
@@ -67,6 +69,6 @@ def generateAllure() {
             jdk              : '',
             properties       : [],
             reportBuildPolicy: 'ALWAYS',
-            results          : [[path: 'allure-results']]
+            results          : [[path: 'target/allure-results']]
     ])
 }
