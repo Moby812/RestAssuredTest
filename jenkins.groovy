@@ -2,9 +2,9 @@ task_branch = "${TEST_BRANCH_NAME}"
 task_tags = "${TEST_TAGS_NAME}"
 
 def branch_cutted = task_branch.contains("origin") ? task_branch.split('/')[1] : task_branch.trim()
-currentBuild.displayName = "$branch_cutted"
+def tags_cutted = task_tags.split(',').collect{it as String}
+currentBuild.displayName = "$task_tags $branch_cutted"
 base_git_url = "https://github.com/Moby812/RestAssuredTest.git"
-
 
 node {
     withEnv(["branch=${branch_cutted}", "base_url=${base_git_url}"]) {
@@ -22,7 +22,7 @@ node {
         }
 
         try {
-            parallel getTestStages(["$task_tags"])
+            parallel getTestStages(tags_cutted)
         } finally {
             stage ("Allure") {
                 generateAllure()
